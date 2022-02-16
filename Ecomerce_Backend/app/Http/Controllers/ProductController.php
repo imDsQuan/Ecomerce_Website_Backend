@@ -69,7 +69,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        return Product::where('id', $id)->first();
     }
 
     /**
@@ -103,6 +103,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::where('id', $id)->delete();
+        return response()->json(["message" => "Delete Succesfully"]);
     }
 }

@@ -9,4 +9,11 @@ class Customer extends Model
 {
     protected $table = 'customers';
     use HasFactory;
+
+    protected $fillable = ['first_name', 'last_name','tel','gender','dob'];
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
 }

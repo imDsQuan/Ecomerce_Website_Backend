@@ -12,6 +12,9 @@ class ProductController extends Controller
      *
      * @return Product[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Response
      */
+
+
+
     public function index()
     {
         return Product::leftJoin('product_categories as Cate', 'Cate.id','=','products.category_id')
@@ -37,28 +40,29 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->file('image')){
-            $file = $request->file('image');
-            $name= $request['name'];
-            $description = $request['description'];
-            $price = $request['price'];
-            $category_id = $request['category_id'];
-            $file_name = date('His').'-'.$file->getClientOriginalName();
-            $file->move(public_path('images'), $file_name);
-            $image_path = 'http://localhost:8000/images/'.$file_name;
-            Product::create([
-                'name' => $name,
-                'description' => $description,
-                'price' => $price,
-                'image_path' => $image_path,
-                'category_id' => $category_id,
-            ]);
-            return response()->json(["message" => "Uploaded Succesfully"]);
-        }
-        else
-        {
-            return response()->json(["message" => "Select image first."]);
-        }
+            if ($request->file('image')){
+                $file = $request->file('image');
+                $name= $request['name'];
+                $description = $request['description'];
+                $price = $request['price'];
+                $category_id = $request['category_id'];
+                $file_name = date('His').'-'.$file->getClientOriginalName();
+                $file->move(public_path('images'), $file_name);
+                $image_path = 'http://localhost:8000/images/'.$file_name;
+                Product::create([
+                    'name' => $name,
+                    'description' => $description,
+                    'price' => $price,
+                    'image_path' => $image_path,
+                    'category_id' => $category_id,
+                ]);
+                return response()->json(["message" => "Uploaded Succesfully"]);
+            }
+            else
+            {
+                return response()->json(["message" => "Select image first."]);
+            }
+
     }
 
     /**

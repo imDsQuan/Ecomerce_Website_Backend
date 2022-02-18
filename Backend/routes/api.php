@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AdminAuthController;
 use \App\Http\Controllers\UserAuthController;
-
+use \App\Http\Controllers\AddressController;
+use \App\Http\Controllers\DeliveryServiceController;
+use \App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,18 @@ Route::group([
 
 });
 
+
+Route::resource('product', ProductController::class);
+Route::post('product/search', [ProductController::class,'search']);
+
+Route::resource('customer', CustomerController::class);
+Route::post('customer/search', [CustomerController::class,'search']);
+
+Route::resource('customer/{id}/address', AddressController::class);
+Route::resource('deliveryService', DeliveryServiceController::class);
+Route::resource('order', OrderController::class);
+
+
 Route::group([
 
     'middleware' => 'api',
@@ -47,8 +61,3 @@ Route::group([
     Route::post('me', [UserAuthController::class,'me']);
 
 });
-
-Route::resource('product', ProductController::class);
-Route::post('product/search', [ProductController::class,'search']);
-
-Route::resource('customer', CustomerController::class);

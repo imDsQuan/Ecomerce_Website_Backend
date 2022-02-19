@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('delivery_services', function (Blueprint $table) {
             $table->id();
-            $table->date('name');
-            $table->date('price');
+            $table->string('name');
+            $table->decimal('price',10,2);
             $table->softDeletes();
             $table->timestamps();
         });

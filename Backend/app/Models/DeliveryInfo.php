@@ -11,7 +11,7 @@ class DeliveryInfo extends Model
 
     protected $fillable = [
         'order_id',
-        'delivery_service_id',
+        'delivery_services_id',
         'receiver_name',
         'tel',
         'address',

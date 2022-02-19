@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\DeliveryInfo;
 use App\Models\Order;
 use App\Models\OrderItem;
-use Carbon\Traits\Date;
+use App\Models\Product;
+use \Illuminate\Support\Facades\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -48,7 +49,7 @@ class OrderController extends Controller
             'total' => $request['total'],
             'payment_method' => $request['payment_method'],
             'status' => 'Pending',
-            'order_date' => \Illuminate\Support\Facades\Date::now(),
+            'order_date' => Date::now(),
         ]);
 
         $orderItems = json_decode($request['order_items'], true);
@@ -62,9 +63,10 @@ class OrderController extends Controller
             ]);
         }
 
+
         $deliveryInfo = DeliveryInfo::create([
             'order_id' => $order['id'],
-            'delivery_services_id' => 1,
+            'delivery_services_id' => $request['deliveryService'],
             'receiver_name' => $request['name'],
             'tel' => $request['tel'],
             'address' => $request['address'],
@@ -84,7 +86,22 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $order['order'] = DB::table('orders')->join('delivery_infos','orders.id', '=', 'delivery_infos.order_id')
+            ->join('delivery_services', 'delivery_services.id', '=', 'delivery_infos.delivery_services_id')
+            ->select('delivery_services.id as deli_id', 'delivery_services.name as deli_name', 'delivery_services.price as deli_price' ,
+                'delivery_infos.receiver_name as name', 'delivery_infos.address as address', 'delivery_infos.tel as tel', 'delivery_infos.delivery_date', 'delivery_infos.delivery_arrived',
+                'orders.*')->where('orders.id' , $id)->first();
+
+        $orderItems = Order::find($id)->orderItems->toArray();
+
+        for($i = 0; $i < sizeof($orderItems); $i++){
+            $product = Product::where('id', '=', $orderItems[$i]['product_id'])->first()->toArray();
+            $orderItems[$i]['product'] = $product;
+        }
+
+        $order['item'] = $orderItems;
+
+        return $order;
     }
 
     /**
@@ -108,8 +125,53 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $order = Order::find($id);
-        $order->status = $request['status'];
-        $order->save();
+
+        if($status = $request['status']){
+
+            $order->status = $status;
+
+            if($status == 'Delivered'){
+                DeliveryInfo::where('order_id', '=', $id)
+                    ->update(['delivery_date' => Date::now()]);
+            } else if($status == 'Completed'){
+                DeliveryInfo::where('order_id', '=', $id)
+                    ->update(['delivery_arrived' => Date::now()]);
+            }
+
+            $order->save();
+        }else {
+            $order = Order::find($id)->update([
+                'customer_id' => $request['customer'],
+                'total' => $request['total'],
+                'payment_method' => $request['payment_method']
+            ]);
+
+            $orderItems = json_decode($request['order_items'], true);
+            OrderItem::where('order_id', '=', $id)->delete();
+            for ($i = 0; $i < sizeof($orderItems); $i++){
+                OrderItem::create([
+                    'order_id' => $id,
+                    'product_id' => $orderItems[$i]['product']['id'],
+                    'quantity' => $orderItems[$i]['quantity'],
+                    'size'=> rand(0, 3),
+                    'price' => $orderItems[$i]['price'],
+                ]);
+            }
+
+
+            $deliveryInfo = DeliveryInfo::where('order_id', '=', $id)->update([
+                'order_id' => $id,
+                'delivery_services_id' => $request['deliveryService'],
+                'receiver_name' => $request['name'],
+                'tel' => $request['tel'],
+                'address' => $request['address'],
+            ]);
+
+            return response()->json([
+                "order" => $order,
+                "deliveryInfo" => $deliveryInfo,
+            ]);
+        }
     }
 
     /**

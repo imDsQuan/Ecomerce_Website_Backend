@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -15,12 +17,22 @@ class ProductController extends Controller
 
 
 
+    public function __construct()
+    {
+
+    }
+
+
     public function index()
     {
         return Product::leftJoin('product_categories as Cate', 'Cate.id','=','products.category_id')
             ->select('Cate.name as cate_name', 'products.*')
             ->get();
+
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -40,6 +52,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
             if ($request->file('image')){
                 $file = $request->file('image');
                 $name= $request['name'];
@@ -96,6 +109,34 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $product = null;
+        $name= $request['name'];
+        $description = $request['description'];
+        $price = $request['price'];
+        $category_id = $request['category_id'];
+        if ($request['image']){
+            $file = $request->file('image');
+            $file_name = date('His').'-'.$file->getClientOriginalName();
+            $file->move(public_path('images'), $file_name);
+            $image_path = 'http://localhost:8000/images/'.$file_name;
+            File::delete(Product::where('id', $id)->first()['image_path']);
+            $product = Product::where('id', $id)->update([
+                'name' => $name,
+                'description' => $description,
+                'price' => $price,
+                'image_path' => $image_path,
+                'category_id' => $category_id,
+            ]);
+        }
+        else{
+            $product = Product::where('id', $id)->update([
+                'name' => $name,
+                'description' => $description,
+                'price' => $price,
+                'category_id' => $category_id,
+            ]);
+        }
+        return response()->json(["message" => "Uploaded Succesfully", "product" => $product]);
 
     }
 

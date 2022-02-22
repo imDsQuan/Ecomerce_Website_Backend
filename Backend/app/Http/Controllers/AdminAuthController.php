@@ -16,7 +16,7 @@ class AdminAuthController extends Controller
             'driver' => 'eloquent',
             'model' => AdminUser::class,
         ]]);
-        $this->middleware('auth:api', ['except' => ['login', 'signup']]);
+        $this->middleware('auth:api', ['except' => ['login', 'signup', 'me']]);
     }
 
     /**

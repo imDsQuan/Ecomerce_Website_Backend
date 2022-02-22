@@ -39,10 +39,8 @@ Route::group([
 
 Route::resource('product', ProductController::class);
 Route::post('product/search', [ProductController::class,'search']);
-
 Route::resource('customer', CustomerController::class);
 Route::post('customer/search', [CustomerController::class,'search']);
-
 Route::resource('customer/{id}/address', AddressController::class);
 Route::resource('deliveryService', DeliveryServiceController::class);
 Route::resource('order', OrderController::class);

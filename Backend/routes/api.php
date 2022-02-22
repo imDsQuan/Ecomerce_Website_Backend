@@ -36,9 +36,13 @@ Route::group([
 
 });
 
-
-Route::resource('product', ProductController::class);
 Route::post('product/search', [ProductController::class,'search']);
+Route::get('product', [ProductController::class,'index']);
+Route::post('product', [ProductController::class,'store']);
+Route::get('product/{id}', [ProductController::class,'show']);
+Route::post('product/{id}', [ProductController::class,'update'])->middleware('CORS');
+Route::delete('product/{id}', [ProductController::class,'index']);
+
 Route::resource('customer', CustomerController::class);
 Route::post('customer/search', [CustomerController::class,'search']);
 Route::resource('customer/{id}/address', AddressController::class);

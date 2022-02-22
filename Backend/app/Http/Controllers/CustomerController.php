@@ -15,7 +15,11 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        return Customer::all();
+        $customers = Customer::all();
+        for($i = 0; $i < sizeof($customers); $i++){
+            $customers[$i]['address'] = Customer::where('id', $customers[$i]['id'])->first()->addresses->toArray();
+        }
+        return $customers;
     }
 
     /**
@@ -65,7 +69,9 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        return Customer::where('id', $id) -> get();
+        $customer = Customer::where('id', $id) -> first();
+        $customer['address'] = Customer::where('id', $customer['id'])->first()->addresses->toArray();
+        return $customer;
     }
 
     /**
@@ -99,7 +105,7 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Customer::where('id', $id)->delete();
     }
 
     public function search(Request $request)

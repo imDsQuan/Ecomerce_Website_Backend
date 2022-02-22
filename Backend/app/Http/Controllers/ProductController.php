@@ -109,11 +109,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product = null;
         $name= $request['name'];
         $description = $request['description'];
         $price = $request['price'];
         $category_id = $request['category_id'];
+
         if ($request['image']){
             $file = $request->file('image');
             $file_name = date('His').'-'.$file->getClientOriginalName();
@@ -127,6 +127,8 @@ class ProductController extends Controller
                 'image_path' => $image_path,
                 'category_id' => $category_id,
             ]);
+            return response()->json(["message" => "Uploaded Succesfully", "product" => $product]);
+
         }
         else{
             $product = Product::where('id', $id)->update([
@@ -136,7 +138,6 @@ class ProductController extends Controller
                 'category_id' => $category_id,
             ]);
         }
-        return response()->json(["message" => "Uploaded Succesfully", "product" => $product]);
 
     }
 

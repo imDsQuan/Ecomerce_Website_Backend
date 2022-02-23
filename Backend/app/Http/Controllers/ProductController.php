@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
@@ -73,7 +74,7 @@ class ProductController extends Controller
             }
             else
             {
-                return response()->json(["message" => "Select image first."]);
+                return response()->json(["error" => "Select image first."]);
             }
 
     }
@@ -161,4 +162,23 @@ class ProductController extends Controller
         }
         return response()->json(["error" => "Product name doesn't exist."]);
     }
+
+    public function getProfit()
+    {
+        return DB::table('products')
+            ->select('products.name','products.image_path' ,DB::raw('SUM(order_items.price) as total'))
+            ->join('order_items', 'products.id','=','order_items.product_id')
+            ->groupBy('products.name')
+            ->groupBy('products.image_path')
+            ->offset(0)->limit(10)
+            ->orderBy('total', 'desc')
+            ->get();
+
+    }
+
+    public function total()
+    {
+        return Product::count();
+    }
+
 }

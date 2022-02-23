@@ -94,7 +94,28 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $customer = Customer::where('id', $id)->update([
+            'first_name'=>$request['first_name'],
+            'last_name'=>$request['last_name'],
+            'gender'=>$request['gender'],
+            'tel'=>$request['tel'],
+            'Dob'=>$request['dob'],
+        ]);
+
+        Address::where('customer_id',$id)->delete();
+        $addresses = $request['addresses'];
+        if($addresses){
+            for($i = 0; $i < sizeof($addresses); $i++){
+                Address::create([
+                    'customer_id' => $id,
+                    'homeNo' => $addresses[$i]['homeNo'],
+                    'street' => $addresses[$i]['street'],
+                    'city' => $addresses[$i]['city'],
+                    'district' => $addresses[$i]['district'],
+                ]);
+            }
+        }
+        return response()->json(["messages" => "Updated customer"]);
     }
 
     /**
@@ -117,6 +138,11 @@ class CustomerController extends Controller
 
         }
         return response()->json(["error" => "Customer name doesn't exist."]);
+    }
+
+    public function total()
+    {
+        return Customer::count();
     }
 
 }

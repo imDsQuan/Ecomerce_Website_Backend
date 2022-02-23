@@ -184,4 +184,21 @@ class OrderController extends Controller
     {
         //
     }
+
+    public function recent()
+    {
+        return DB::table('orders')
+//            ->where('status', '<>' ,'Refunded')
+            ->join('customers', 'customers.id', '=', 'orders.id')
+            ->select('orders.*', 'customers.first_name', 'customers.last_name')
+            ->offset(0)->limit(10)->orderBy('created_at', 'desc')->get();
+    }
+
+    public function totalOrder(){
+        return Order::count();
+    }
+
+    public function totalProfit(){
+        return Order::sum('total');
+    }
 }

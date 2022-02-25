@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use \Illuminate\Http\Request;
+
 abstract class EloquentRepository{
 
     protected $_model;
@@ -9,6 +11,12 @@ abstract class EloquentRepository{
     public function __construct()
     {
         $this->setModel();
+    }
+
+    public function getAll()
+    {
+
+        return $this->_model->all();
     }
 
     abstract public function getModel();
@@ -20,20 +28,20 @@ abstract class EloquentRepository{
 
     public function find($id)
     {
-        $result = $this->_model->find($id);
+        $result = $this->_model->where('id', $id)->first();
         return $result;
     }
 
-    public function create(array $attributes)
+    public function create(array $request)
     {
-        return $this->_model->create($attributes);
+        return $this->_model->create($request);
     }
 
-    public function update($id, array $attributes)
+    public function update($id, Request $request)
     {
         $result = $this->find($id);
         if ($result) {
-            $result->update($attributes);
+            $result->update($request->all());
             return $result;
         }
 
@@ -42,7 +50,7 @@ abstract class EloquentRepository{
 
     public function delete($id)
     {
-        $result = $this->find($id);
+        $result = $this->_model->find($id);
         if ($result) {
             $result->delete();
 
@@ -50,6 +58,11 @@ abstract class EloquentRepository{
         }
 
         return false;
+    }
+
+    public function total()
+    {
+        return $this->_model->count();
     }
 
 }

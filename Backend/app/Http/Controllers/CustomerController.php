@@ -4,28 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Address;
 use App\Models\Customer;
+use App\Repositories\CustomerRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Customer[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Response
+     * @return Customer[]|\Illuminate\Database\Eloquent\Collection|Response
      */
+
+    protected $customerRepository;
+
+    public function __construct(CustomerRepository $customerRepository)
+    {
+        $this->customerRepository = $customerRepository;
+    }
+
     public function index()
     {
-        $customers = Customer::all();
-        for($i = 0; $i < sizeof($customers); $i++){
-            $customers[$i]['address'] = Customer::where('id', $customers[$i]['id'])->first()->addresses->toArray();
-        }
-        return $customers;
+        return $this->customerRepository->getAll();
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -36,49 +43,29 @@ class CustomerController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
-        $customer = Customer::create([
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'gender' => $request['gender'],
-            'dob' => $request['dob'],
-            'tel' => $request['tel'],
-        ]);
-
-        $address = Address::create([
-            'customer_id' => $customer['id'],
-            'homeNo' => $request['homeNo'],
-            'street' => $request['street'],
-            'city' => $request['city'],
-            'district' => $request['district'],
-        ]);
-
-        return response(["customer" => $customer,
-            "address" => $address,
-            ]);
+        $this->customerRepository->create($request);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
-        $customer = Customer::where('id', $id) -> first();
-        $customer['address'] = Customer::where('id', $customer['id'])->first()->addresses->toArray();
-        return $customer;
+        return $this->customerRepository->find($id);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -90,59 +77,32 @@ class CustomerController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return false|JsonResponse
      */
     public function update(Request $request, $id)
     {
-        $customer = Customer::where('id', $id)->update([
-            'first_name'=>$request['first_name'],
-            'last_name'=>$request['last_name'],
-            'gender'=>$request['gender'],
-            'tel'=>$request['tel'],
-            'Dob'=>$request['dob'],
-        ]);
-
-        Address::where('customer_id',$id)->delete();
-        $addresses = $request['addresses'];
-        if($addresses){
-            for($i = 0; $i < sizeof($addresses); $i++){
-                Address::create([
-                    'customer_id' => $id,
-                    'homeNo' => $addresses[$i]['homeNo'],
-                    'street' => $addresses[$i]['street'],
-                    'city' => $addresses[$i]['city'],
-                    'district' => $addresses[$i]['district'],
-                ]);
-            }
-        }
-        return response()->json(["messages" => "Updated customer"]);
+        return $this->customerRepository->update($id, $request);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
-        Customer::where('id', $id)->delete();
+        return $this->customerRepository->delete($id);
     }
 
     public function search(Request $request)
     {
-        $name = $request->has('name') ? $request->get('name') : null;
-        if($name){
-            return Customer::where('first_name', 'like', '%'.$name.'%')
-                ->orWhere('last_name', 'like', '%'.$name.'%')->get();
-
-        }
-        return response()->json(["error" => "Customer name doesn't exist."]);
+        return $this->customerRepository->search($request);
     }
 
     public function total()
     {
-        return Customer::count();
+        return $this->customerRepository->total();
     }
 
 }

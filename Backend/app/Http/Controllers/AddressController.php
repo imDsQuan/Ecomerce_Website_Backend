@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Repositories\AddressRepository;
 use Illuminate\Http\Request;
 
 class AddressController extends Controller
@@ -12,9 +13,17 @@ class AddressController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $addressRepository;
+
+    public function __construct(AddressRepository $addressRepository)
+    {
+        $this->addressRepository = $addressRepository;
+    }
+
     public function index($id)
     {
-        return Customer::find($id)->addresses;
+        return $this->addressRepository->find($id);
     }
 
     /**

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -13,32 +15,26 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Product[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Response
+     * @return Product[]|\Illuminate\Database\Eloquent\Collection|Response
      */
 
+    protected $productRepository;
 
-
-    public function __construct()
+    public function __construct(ProductRepository $productRepository)
     {
-
+        $this->productRepository = $productRepository;
     }
 
 
     public function index()
     {
-        return Product::leftJoin('product_categories as Cate', 'Cate.id','=','products.category_id')
-            ->select('Cate.name as cate_name', 'products.*')
-            ->get();
-
+        return $this->productRepository->getAll();
     }
-
-
-
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -48,53 +44,30 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return void
      */
     public function store(Request $request)
     {
-
-            if ($request->file('image')){
-                $file = $request->file('image');
-                $name= $request['name'];
-                $description = $request['description'];
-                $price = $request['price'];
-                $category_id = $request['category_id'];
-                $file_name = date('His').'-'.$file->getClientOriginalName();
-                $file->move(public_path('images'), $file_name);
-                $image_path = 'http://localhost:8000/images/'.$file_name;
-                Product::create([
-                    'name' => $name,
-                    'description' => $description,
-                    'price' => $price,
-                    'image_path' => $image_path,
-                    'category_id' => $category_id,
-                ]);
-                return response()->json(["message" => "Uploaded Succesfully"]);
-            }
-            else
-            {
-                return response()->json(["error" => "Select image first."]);
-            }
-
+        return $this->productRepository->create($request->toArray());
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
-        return Product::where('id', $id)->first();
+        return $this->productRepository->find($id);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -104,81 +77,39 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param    $id
      */
     public function update(Request $request, $id)
     {
-        $name= $request['name'];
-        $description = $request['description'];
-        $price = $request['price'];
-        $category_id = $request['category_id'];
-
-        if ($request['image']){
-            $file = $request->file('image');
-            $file_name = date('His').'-'.$file->getClientOriginalName();
-            $file->move(public_path('images'), $file_name);
-            $image_path = 'http://localhost:8000/images/'.$file_name;
-            File::delete(Product::where('id', $id)->first()['image_path']);
-            $product = Product::where('id', $id)->update([
-                'name' => $name,
-                'description' => $description,
-                'price' => $price,
-                'image_path' => $image_path,
-                'category_id' => $category_id,
-            ]);
-            return response()->json(["message" => "Uploaded Succesfully", "product" => $product]);
-
-        }
-        else{
-            $product = Product::where('id', $id)->update([
-                'name' => $name,
-                'description' => $description,
-                'price' => $price,
-                'category_id' => $category_id,
-            ]);
-        }
-
+        return $this->productRepository->update($id,$request);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *
      */
     public function destroy($id)
     {
-        Product::where('id', $id)->delete();
-        return response()->json(["message" => "Delete Succesfully"]);
+        $this->productRepository->delete($id);
     }
 
     public function search(Request $request)
     {
-        $name = $request->has('name') ? $request->get('name') : null;
-        if($name){
-            return Product::where('name', 'like', '%'.$name.'%')->get();
-        }
-        return response()->json(["error" => "Product name doesn't exist."]);
+        return $this->productRepository->search($request);
     }
 
     public function getProfit()
     {
-        return DB::table('products')
-            ->select('products.name','products.image_path' ,DB::raw('SUM(order_items.price) as total'))
-            ->join('order_items', 'products.id','=','order_items.product_id')
-            ->groupBy('products.name')
-            ->groupBy('products.image_path')
-            ->offset(0)->limit(10)
-            ->orderBy('total', 'desc')
-            ->get();
+        return $this->productRepository->getProfit();
 
     }
 
     public function total()
     {
-        return Product::count();
+        return $this->productRepository->total();
     }
 
 }

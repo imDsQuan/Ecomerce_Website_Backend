@@ -23,7 +23,7 @@ class ProductRepository extends EloquentRepository{
             ->get();
     }
 
-    public function create(array $request){
+    public function create(Request $request){
         if ($request->file('image')){
             $file = $request->file('image');
             $name= $request['name'];

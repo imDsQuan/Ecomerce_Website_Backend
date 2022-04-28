@@ -37,7 +37,7 @@ class OrderRepository extends EloquentRepository
             ->get();
     }
 
-    public function create(array $request)
+    public function create(Request $request)
     {
         $order = Order::create([
             'customer_id' => $request['customer'],
@@ -151,7 +151,7 @@ class OrderRepository extends EloquentRepository
     public function recent(){
         return DB::table('orders')
 //            ->where('status', '<>' ,'Refunded')
-            ->join('customers', 'customers.id', '=', 'orders.id')
+            ->join('customers', 'customers.id', '=', 'orders.customer_id')
             ->select('orders.*', 'customers.first_name', 'customers.last_name')
             ->offset(0)->limit(10)->orderBy('created_at', 'desc')->get();
     }

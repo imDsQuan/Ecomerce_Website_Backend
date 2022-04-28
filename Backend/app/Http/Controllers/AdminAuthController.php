@@ -35,6 +35,8 @@ class AdminAuthController extends Controller
 
     public function signup(AdminSignInRequest $request)
     {
+
+
         AdminUser::create($request->all());
         return $this->login($request);
     }

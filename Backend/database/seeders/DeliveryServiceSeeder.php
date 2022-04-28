@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-<<<<<<< HEAD
-=======
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
->>>>>>> 06a52d866e56aa0dd4a2d42ccd02734b03c64d0e
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +18,7 @@ class DeliveryServiceSeeder extends Seeder
     {
         DB::table('delivery_services')->insert([
             'name' =>'Giao Hang Nhanh',
-            'price'=>'10',
+            'price'=>'15',
         ]);
         DB::table('delivery_services')->insert([
             'name' =>'Giao Hang Tiet Kiem',
@@ -28,11 +26,11 @@ class DeliveryServiceSeeder extends Seeder
         ]);
         DB::table('delivery_services')->insert([
             'name' =>'Viettel Post',
-            'price'=>'10',
+            'price'=>'20',
         ]);
         DB::table('delivery_services')->insert([
             'name' =>'Goship',
-            'price'=>'10',
+            'price'=>'25',
         ]);
         DB::table('delivery_services')->insert([
             'name' =>'J&T Express',

@@ -32,7 +32,7 @@ abstract class EloquentRepository{
         return $result;
     }
 
-    public function create(array $request)
+    public function create(Request $request)
     {
         return $this->_model->create($request);
     }
@@ -50,7 +50,7 @@ abstract class EloquentRepository{
 
     public function delete($id)
     {
-        $result = $this->_model->find($id);
+        $result = $this->_model->where('id', $id);
         if ($result) {
             $result->delete();
 

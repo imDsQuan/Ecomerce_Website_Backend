@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class CustomerRepository extends EloquentRepository
 {
 
-    protected $addressRepository;
+    protected AddressRepository $addressRepository;
 
     public function __construct(AddressRepository $addressRepository)
     {
@@ -78,7 +78,7 @@ class CustomerRepository extends EloquentRepository
         return $customer;
     }
 
-    public function create(array $request)
+    public function create(Request $request)
     {
         $customer = Customer::create([
             'first_name' => $request['first_name'],
@@ -105,5 +105,10 @@ class CustomerRepository extends EloquentRepository
     public function total()
     {
         return Customer::count();
+    }
+
+    public function delete($id)
+    {
+        return Customer::find($id)->delete();
     }
 }

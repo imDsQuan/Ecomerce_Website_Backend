@@ -47,7 +47,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $this->customerRepository->create($request);
+        $this->customerRepository->create($request->toArray());
     }
 
     /**
@@ -88,7 +88,7 @@ class CustomerController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return Response
+     * @return bool
      */
     public function destroy($id)
     {

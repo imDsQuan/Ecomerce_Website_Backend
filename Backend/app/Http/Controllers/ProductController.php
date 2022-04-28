@@ -49,7 +49,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->productRepository->create($request->toArray());
+        return $this->productRepository->create($request);
     }
 
     /**

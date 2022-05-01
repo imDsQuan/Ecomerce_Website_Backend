@@ -50,7 +50,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->orderRepository->create($request->toArray());
+        return $this->orderRepository->create($request);
     }
 
     /**

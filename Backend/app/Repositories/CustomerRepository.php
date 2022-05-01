@@ -95,7 +95,7 @@ class CustomerRepository extends EloquentRepository
             'district' => $request['district'],
         ];
 
-        $this->addressRepository->create($address);
+        $this->addressRepository->create(new Request($address));
 
         return response(["customer" => $customer,
             "address" => $address,

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminAuthController;
@@ -56,6 +57,9 @@ Route::get('order/total', [OrderController::class,'totalOrder']);
 Route::get('order/profit', [OrderController::class,'totalProfit']);
 Route::get('order/recent', [OrderController::class, 'recent']);
 Route::resource('order', OrderController::class);
+
+Route::resource('discount', DiscountController::class);
+
 
 
 Route::group([

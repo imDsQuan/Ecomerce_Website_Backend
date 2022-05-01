@@ -14,7 +14,7 @@ class AddressController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    protected $addressRepository;
+    protected  $addressRepository;
 
     public function __construct(AddressRepository $addressRepository)
     {
@@ -23,7 +23,7 @@ class AddressController extends Controller
 
     public function index($id)
     {
-        return $this->addressRepository->find($id);
+        return $this->addressRepository->getByCusId($id);
     }
 
     /**

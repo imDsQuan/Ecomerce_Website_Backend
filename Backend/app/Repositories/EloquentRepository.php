@@ -15,7 +15,6 @@ abstract class EloquentRepository{
 
     public function getAll()
     {
-
         return $this->_model->all();
     }
 
@@ -34,12 +33,12 @@ abstract class EloquentRepository{
 
     public function create(Request $request)
     {
-        return $this->_model->create($request);
+        return $this->_model->create($request->toArray());
     }
 
     public function update($id, Request $request)
     {
-        $result = $this->find($id);
+        $result = $this->_model->find($id);
         if ($result) {
             $result->update($request->all());
             return $result;

@@ -4,12 +4,10 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-<<<<<<< HEAD
-=======
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Discount>
  */
->>>>>>> 06a52d866e56aa0dd4a2d42ccd02734b03c64d0e
 class DiscountFactory extends Factory
 {
     /**
@@ -20,7 +18,11 @@ class DiscountFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'product_id' => rand(4,7),
+            'desc' => $this->faker->realText,
+            'discount_percent' => rand(20, 30),
+            'active' => rand(0, 1),
+            'price' => rand(40, 30),
         ];
     }
 }

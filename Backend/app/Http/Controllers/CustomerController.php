@@ -47,7 +47,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $this->customerRepository->create($request->toArray());
+        $this->customerRepository->create($request);
     }
 
     /**

@@ -57,7 +57,7 @@ class OrderRepository extends EloquentRepository
                 'price' => $orderItems[$i]['price'],
             ];
 
-            $this->orderItemRepository->create($orderItem);
+            $this->orderItemRepository->create(new Request($orderItem));
         }
 
 
@@ -69,7 +69,7 @@ class OrderRepository extends EloquentRepository
             'address' => $request['address'],
         ]);
 
-        $this->deliveryInfoRepository->create($deliveryInfo);
+        $this->deliveryInfoRepository->create(new Request($deliveryInfo));
 
         return response()->json([
             "order" => $order,
@@ -123,13 +123,13 @@ class OrderRepository extends EloquentRepository
             $orderItems = json_decode($request['order_items'], true);
             OrderItem::where('order_id', '=', $id)->delete();
             for ($i = 0; $i < sizeof($orderItems); $i++){
-                $this->orderItemRepository->create([
+                $this->orderItemRepository->create(new Request([
                     'order_id' => $id,
                     'product_id' => $orderItems[$i]['product']['id'],
                     'quantity' => $orderItems[$i]['quantity'],
                     'size'=> rand(0, 3),
                     'price' => $orderItems[$i]['price'],
-                ]);
+                ]));
             }
 
 

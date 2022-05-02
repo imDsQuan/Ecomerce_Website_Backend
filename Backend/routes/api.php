@@ -36,6 +36,8 @@ Route::group([
 
 });
 
+Route::get('product/feature', [ProductController::class, 'feature']);
+Route::get('product/latest', [ProductController::class, 'latest']);
 Route::get('product/total', [ProductController::class,'total']);
 Route::get('product/profit', [ProductController::class,'getProfit']);
 Route::post('product/search', [ProductController::class,'search']);
@@ -44,6 +46,7 @@ Route::post('product', [ProductController::class,'store']);
 Route::get('product/{id}', [ProductController::class,'show']);
 Route::post('product/{id}', [ProductController::class,'update'])->middleware('CORS');
 Route::delete('product/{id}', [ProductController::class,'destroy']);
+
 
 Route::get('customer/total',[CustomerController::class,'total']);
 Route::post('customer/search', [CustomerController::class,'search']);

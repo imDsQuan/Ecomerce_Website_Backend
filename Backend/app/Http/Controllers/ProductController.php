@@ -112,4 +112,12 @@ class ProductController extends Controller
         return $this->productRepository->total();
     }
 
+    public function feature(){
+        return $this->productRepository->feature();
+    }
+
+    public function latest(){
+        return $this->productRepository->latest();
+    }
+
 }

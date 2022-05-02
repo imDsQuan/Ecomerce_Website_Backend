@@ -18,9 +18,17 @@ class ProductRepository extends EloquentRepository{
 
     public function getAll()
     {
-        return Product::leftJoin('product_categories as Cate', 'Cate.id','=','products.category_id')
-            ->select('Cate.name as cate_name', 'products.*')
+        return Product::leftJoin('product_categories as Cate', 'Cate.id','=','products.category_id')->leftJoin('discounts', 'discounts.product_id', '=', 'products.id')
+            ->select('Cate.name as cate_name', 'products.*', 'discounts.discount_percent', 'discounts.price as discount_price')
             ->get();
+    }
+
+    public function find($id)
+    {
+        return Product::leftJoin('product_categories as Cate', 'Cate.id','=','products.category_id')->leftJoin('discounts', 'discounts.product_id', '=', 'products.id')
+            ->select('products.*', 'discounts.discount_percent', 'discounts.price as discount_price', 'Cate.name as cate_name')
+            ->where('products.id', '=', $id)
+            ->first();
     }
 
     public function create(Request $request){
@@ -64,7 +72,9 @@ class ProductRepository extends EloquentRepository{
     {
         $name = $request->has('name') ? $request->get('name') : null;
         if($name){
-            return Product::where('name', 'like', '%'.$name.'%')->get();
+            return Product::leftJoin('discounts', 'discounts.product_id', '=', 'products.id')
+                ->select('products.*', 'discounts.discount_percent', 'discounts.price as discount_price')
+                ->where('name', 'like', '%'.$name.'%')->get();
         }
         return response()->json(["error" => "Product name doesn't exist."]);
     }
@@ -76,7 +86,7 @@ class ProductRepository extends EloquentRepository{
         $price = $request['price'];
         $category_id = $request['category_id'];
 
-        if ($request['image']){
+        if ($request->file('image')){
             $file = $request->file('image');
             $file_name = date('His').'-'.$file->getClientOriginalName();
             $file->move(public_path('images'), $file_name);
@@ -100,5 +110,17 @@ class ProductRepository extends EloquentRepository{
                 'category_id' => $category_id,
             ]);
         }
+    }
+
+    public function feature()
+    {
+        return DB::table('products')->leftJoin('discounts', 'discounts.product_id', '=', 'products.id')
+        ->select('products.*', 'discounts.discount_percent', 'discounts.price as discount_price')->inRandomOrder()->limit(4)->get();
+    }
+
+    public function latest()
+    {
+        return DB::table('products')->leftJoin('discounts', 'discounts.product_id', '=', 'products.id')
+            ->select('products.*', 'discounts.discount_percent', 'discounts.price as discount_price')->orderBy('id', 'desc')->limit(8)->get();
     }
 }

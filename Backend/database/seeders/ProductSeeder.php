@@ -46,6 +46,61 @@ class ProductSeeder extends Seeder
             'category_id' => rand(1, 6)
         ]);
 
+        DB::table('products')->insert([
+            'name' =>'Blue Jacket',
+            'description' => 'This is description for Jacket',
+            'price' => 80,
+            'image_path' => 'https://thegioixechaydien.com/wp-content/uploads/2015/01/jacket2.jpg',
+            'category_id' => rand(1, 6)
+        ]);
+
+        DB::table('products')->insert([
+            'name' =>'Black White Jacket',
+            'description' => 'This is description for Jacket',
+            'price' => 80,
+            'image_path' => 'https://product.hstatic.net/1000285106/product/999d26ab52d1a08ff9c022_444d787726ad4e09b228027be58282f4_grande.jpg',
+            'category_id' => rand(1, 6)
+        ]);
+
+        DB::table('products')->insert([
+            'name' =>'Brown Jacket',
+            'description' => 'This is description for Jacket',
+            'price' => 80,
+            'image_path' => 'https://ivymoda.com/assets/files/news/2021/07/26/e8f495636b685860aff62ccbc314a6ca.jpg',
+            'category_id' => rand(1, 6)
+        ]);
+
+        DB::table('products')->insert([
+            'name' =>'Hoodie UID',
+            'description' => 'This is description for Hoodie',
+            'price' => 80,
+            'image_path' => 'https://bumshop.com.vn/wp-content/uploads/2021/01/hd73-ao-hoodie-form-rong-nam-nu-uid-6.jpg',
+            'category_id' => rand(1, 6)
+        ]);
+
+        DB::table('products')->insert([
+            'name' =>'Sad Boiz Signature Hoodie',
+            'description' => 'This is description for Hoodie',
+            'price' => 80,
+            'image_path' => 'http://product.hstatic.net/200000159059/product/114fc420-7fc3-420d-9228-065246a721cf_32c7c59978844f3b9b880bdeba8eaadc_grande.jpeg',
+            'category_id' => rand(1, 6)
+        ]);
+
+        DB::table('products')->insert([
+            'name' =>'Orange Hoodie',
+            'description' => 'This is description for Hoodie',
+            'price' => 80,
+            'image_path' => 'https://lh5.googleusercontent.com/5j-bH_qCy9tK3coiCySdigft4shiHF0iyOMPUFZmEYKsVGJRPGGpSyvs2AHuMyzvIMciPRGYx2RevdNEsdNiYnscgdAmptw4zSMMXl_mn-IuSB_5FGbOMVgIawxWJzLI0Al7rxlR',
+            'category_id' => rand(1, 6)
+        ]);
+
+        DB::table('products')->insert([
+            'name' =>'Hoodie Adidas',
+            'description' => 'This is description for Hoodie',
+            'price' => 80,
+            'image_path' => 'https://assets.adidas.com/images/w_600,f_auto,q_auto/e5f8ddac897740ee87faacf0015fff97_9366/Ao_Hoodie_Kermit_(Unisex)_trang_GP3336.jpg',
+            'category_id' => rand(1, 6)
+        ]);
 
 
     }

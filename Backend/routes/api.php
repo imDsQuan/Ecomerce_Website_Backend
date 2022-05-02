@@ -48,6 +48,7 @@ Route::post('product/{id}', [ProductController::class,'update'])->middleware('CO
 Route::delete('product/{id}', [ProductController::class,'destroy']);
 
 
+Route::get('customer/latest', [CustomerController::class,'latest']);
 Route::get('customer/total',[CustomerController::class,'total']);
 Route::post('customer/search', [CustomerController::class,'search']);
 Route::resource('customer', CustomerController::class);

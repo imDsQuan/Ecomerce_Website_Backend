@@ -105,4 +105,8 @@ class CustomerController extends Controller
         return $this->customerRepository->total();
     }
 
+    public function latest(){
+        return $this->customerRepository->latest();
+    }
+
 }

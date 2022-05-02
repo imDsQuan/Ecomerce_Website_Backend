@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Address;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use PHPUnit\Util\Json;
 
 class CustomerRepository extends EloquentRepository
 {
@@ -97,9 +99,7 @@ class CustomerRepository extends EloquentRepository
 
         $this->addressRepository->create(new Request($address));
 
-        return response(["customer" => $customer,
-            "address" => $address,
-        ]);
+        return Response::json($customer, 200);
     }
 
     public function total()
@@ -110,5 +110,10 @@ class CustomerRepository extends EloquentRepository
     public function delete($id)
     {
         return Customer::find($id)->delete();
+    }
+
+    public function latest()
+    {
+        return Customer::orderBy('id', 'desc')->first();
     }
 }
